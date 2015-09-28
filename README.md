@@ -1,4 +1,4 @@
-# WorkShop Client 
+# WorkShopClient 
 
 ## How to
 Clone the repo using the command :
