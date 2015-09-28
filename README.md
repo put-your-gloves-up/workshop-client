@@ -1,4 +1,4 @@
-# Jerek0 Starter
+# WorkShop Client 
 
 ## How to
 Clone the repo using the command :
