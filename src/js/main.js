@@ -29,9 +29,9 @@ window.webkitAudioContext;
 
 var context = new AudioContext();
 // Define sounds
-var bass = new Sound('PO_DualBass120C-02.wav', context);
-var beats = new Sound('PO_BeatAmpedA120-02.wav', context);
-var synth = new Sound('PO_Massaw120E-02.wav', context);
+var bass = new Sound('audio/PO_DualBass120C-02.wav', context);
+var beats = new Sound('audio/PO_BeatAmpedA120-02.wav', context);
+var synth = new Sound('audio/PO_Massaw120E-02.wav', context);
 //synth.startDistorsion();
 
 colors.on('track', function(event) {
@@ -56,11 +56,11 @@ colors.on('track', function(event) {
                     break;
 
                 case 'yellow' :
-                    beats.setVolume(1);
+                    beats.setVolume(0.6);
                     break;
 
-                case 'cyan' :
-                    synth.setVolume(1);
+                case 'red' :
+                    synth.setVolume(0.2);
                     break;
 
             }
