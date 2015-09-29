@@ -2,9 +2,8 @@
  * Created by jerek0 on 07/05/2015.
  */
 
-import Test from "./classes/test";
+import NetworkManager from "./network/NetworkManager";
 
-let myTest = new Test(1, "Jérémy");
+navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 
-console.log(myTest);
-myTest.sayHello();
+var networkManager = new NetworkManager();

@@ -80,3 +80,4 @@ crashlytics-build.properties
 
 
 build
+src/js/config.js

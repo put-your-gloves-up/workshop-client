@@ -23,12 +23,16 @@ module.exports = {
         src: src + "/htdocs/**",
         dest: dest
     },
+    vendor: {
+        src: src + "/js/vendor/**",
+        dest: dest + "/js/vendor"
+    },
     browserify: {
         // A separate bundle will be generated for each
         // bundle config in the list below
         bundleConfigs: [{
             entries: src + '/js/main.js',
-            dest: dest + '/js',
+            dest: dest + '/js/app',
             outputName: 'min.js',
             // list of modules to make require-able externally
             require: ['jquery', 'backbone/node_modules/underscore']
