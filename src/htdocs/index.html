@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <title></title>
     <link rel="stylesheet" href="css/min.css"/>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
 </head>
 <body>
 
-    <div class="position-center">
+    <div class="position-center network-ui z-index-20 bkg-color-light padding-std">
         <h1>WorkShop JS</h1>
         <p>I am <span id="user">not connected ...</span></p>
         
         <ul id="users"></ul>
+    </div>
 
-        <video id="myVideo" autoplay width="400" height="300"></video>
-        <video id="distVideo" autoplay width="400" height="300"></video>
+    <div class="video-wrapper video-wrapper-local">
+        <video id="myVideo" autoplay></video>
+    </div>
+    <div class="video-wrapper video-wrapper-dist">
+        <video id="distVideo" autoplay></video>
     </div>
 
     <script src="js/vendor/tracking-min.js"></script>
