@@ -165,7 +165,7 @@ export default class NetworkManager {
         console.log('reveive stream', stream);
 
         // push the stream to video
-        $('video')[0].src = window.URL.createObjectURL(stream);
+        $('#distVideo')[0].src = window.URL.createObjectURL(stream);
     }
     
 }
