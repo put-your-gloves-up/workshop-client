@@ -113,7 +113,7 @@ export default class NetworkManager {
         this.cid = $(e.currentTarget).data('user');
 
         // get our video
-        navigator.getUserMedia({audio: true, video: true}, this.sendCall.bind(this), util.log);
+        this.sendCall(workshop.localWebcamStream);
     }
 
     // send call
@@ -144,7 +144,7 @@ export default class NetworkManager {
         this.peerCall.on('stream', this.receiveStream.bind(this));
 
         // get our micro stream
-        navigator.getUserMedia({audio: true, video: true}, this.answerCall.bind(this), util.log);
+        this.answerCall(workshop.localWebcamStream);
     }
 
     answerCall(stream){
