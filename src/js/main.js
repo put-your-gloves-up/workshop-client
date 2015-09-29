@@ -17,8 +17,28 @@ var app = {
             scope.initNetwork.bind(scope).call();
             scope.initSound.bind(scope, scope.initColorTracker.bind(scope)).call();
         });
+        
+        this.bindUIActions();
     },
-
+    
+    bindUIActions: function() {
+        this.registerNetworkUI();
+    },
+    
+    registerNetworkUI: function() {
+        window.addEventListener('keydown', function(e) {
+            switch(e.keyCode) {
+                case 32: // SPACE
+                    $('.network-ui').toggleClass('hidden');
+                    break;
+                
+                default:
+                    console.log(e.keyCode);
+                    break;
+            }
+        });
+    },
+    
     getLocalWebcam: function (cb) {
         navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
         // Put user's video directly into #myVideo
