@@ -15,7 +15,7 @@ var app = {
         
         this.getLocalWebcam(function() {
             scope.initNetwork.bind(scope).call();
-            scope.initSound.bind(scope).call(scope.initColorTracker.bind(scope));
+            scope.initSound.bind(scope, scope.initColorTracker.bind(scope)).call();
         });
     },
 
@@ -46,7 +46,7 @@ var app = {
         this.networkManager = new NetworkManager();
     },
 
-    initSound: function (cb) {
+    initSound: function(cb) {
         // Define audio context
         window.AudioContext = window.AudioContext ||
         window.webkitAudioContext;
@@ -56,51 +56,51 @@ var app = {
         this.bass = new Sound('audio/PO_DualBass120C-02.wav', this.audioContext);
         this.beats = new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext);
         this.synth = new Sound('audio/PO_Massaw120E-02.wav', this.audioContext);
-        
+
         cb && cb();
     },
     
     initColorTracker: function() {
+        var scope = this;
+        
         tracking.ColorTracker.registerColor('red', function(r, g, b) {
             if (r > 100 && g < 50 && b < 50) {
                 return true;
             }
             return false;
         });
-
+        
         var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow', 'red']);
-
         colors.on('track', function(event) {
             if (event.data.length === 0) {
 
-                this.bass.setVolume(0);
-                this.beats.setVolume(0);
-                this.synth.setVolume(0);
+                scope.bass.setVolume(0);
+                scope.beats.setVolume(0);
+                scope.synth.setVolume(0);
 
             } else {
 
-                this.bass.setVolume(0);
-                this.beats.setVolume(0);
-                this.synth.setVolume(0);
+                scope.bass.setVolume(0);
+                scope.beats.setVolume(0);
+                scope.synth.setVolume(0);
 
                 event.data.forEach(function(rect) {
 
                     switch(rect.color) {
 
                         case 'magenta' :
-                            this.bass.setVolume(1);
+                            scope.bass.setVolume(1);
                             break;
 
                         case 'yellow' :
-                            this.beats.setVolume(0.6);
+                            scope.beats.setVolume(0.6);
                             break;
 
                         case 'red' :
-                            this.synth.setVolume(0.2);
+                            scope.synth.setVolume(0.2);
                             break;
 
                     }
-
                     //console.log(rect.x, rect.y, rect.height, rect.width, rect.color);
                 });
             }
