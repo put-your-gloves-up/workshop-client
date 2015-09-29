@@ -3,10 +3,28 @@
  */
 
 import NetworkManager from "./network/NetworkManager";
+import * as util from "./misc/util"
+import $ from "jquery";
 
 navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 
 var networkManager = new NetworkManager();
+
+// Put user's video directly into #myVideo
+navigator.getUserMedia({video: true, audio: true}, function(localMediaStream) {
+    var video = document.querySelector('#myVideo');
+    video.src = window.URL.createObjectURL(localMediaStream);
+
+    // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
+    // See crbug.com/110938.
+    video.onloadedmetadata = function(e) {
+        // Ready to go. Do some stuff.
+        setTimeout(function() {
+            $('#myVideo').toggleClass('video-small', false);
+        }, 1000);
+    };
+    
+}, util.log);
 
 /**
  * Created by Vincent on 29/09/2015.
@@ -70,4 +88,4 @@ colors.on('track', function(event) {
     }
 });
 
-tracking.track('#myVideo', colors, { camera: true });
+tracking.track('#myVideo', colors);
