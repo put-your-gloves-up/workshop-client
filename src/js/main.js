@@ -6,6 +6,7 @@ import NetworkManager from "./network/NetworkManager";
 import * as util from "./misc/util"
 import $ from "jquery";
 import Sound from "./audio/Sound";
+import DetectedColor from "./DetectedColor";
 
 var app = {
     init: function () {
@@ -72,10 +73,14 @@ var app = {
         window.webkitAudioContext;
 
         this.audioContext = new AudioContext();
-        // Define sounds
-        this.bass = new Sound('audio/PO_DualBass120C-02.wav', this.audioContext);
-        this.beats = new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext);
-        this.synth = new Sound('audio/PO_Massaw120C-02.wav', this.audioContext);
+
+        // Define color
+
+        this.ColorsDetected = [];
+
+        this.ColorsDetected['magenta'] = new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100);
+        this.ColorsDetected['yellow'] = new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100);
+        this.ColorsDetected['red'] = new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.wav', this.audioContext), 100, 100);
 
         cb && cb();
     },
@@ -91,47 +96,27 @@ var app = {
         });
         
         var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow', 'red']);
+
         colors.on('track', function(event) {
             if (event.data.length === 0) {
 
-                scope.bass.setVolume(0);
-                scope.beats.setVolume(0);
-                scope.synth.setVolume(0);
+                for(var color in scope.ColorsDetected){
+                    scope.ColorsDetected[color].removeEffects();
+                }
 
             } else {
 
-                scope.bass.setVolume(0);
-                scope.beats.setVolume(0);
-                scope.synth.setVolume(0);
+                for(var color in scope.ColorsDetected){
+                    scope.ColorsDetected[color].removeEffects();
+                }
 
                 event.data.forEach(function(rect) {
-
-                    switch(rect.color) {
-
-                        case 'magenta' :
-                            scope.bass.setVolume(10);
-                            if(rect.y != 0) {
-                                scope.bass.setLowPass(rect.y);
-                            }
-                            break;
-
-                        case 'yellow' :
-                            scope.beats.setVolume(1);
-                            if(rect.y != 0) {
-                                scope.beats.setLowPass(rect.y * 10);
-                            }
-                            break;
-
-                        case 'red' :
-                            scope.synth.setVolume(1);
-                            console.log(rect.y * 4);
-                            if(rect.y != 0) {
-                                scope.synth.setLowPass(rect.y * 10);
-                            }
-                            break;
-
+                    for(var color in scope.ColorsDetected) {
+                        if (rect.color == color) {
+                            scope.ColorsDetected[rect.color].setPos(rect.x, rect.y);
+                            scope.ColorsDetected[rect.color].updateEffects();
+                        }
                     }
-                    //console.log(rect.x, rect.y, rect.height, rect.width, rect.color);
                 });
             }
         });
