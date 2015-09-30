@@ -97,9 +97,9 @@ var app = {
 
         scope.ColorsDetected = {};
 
-        scope.ColorsDetected['magenta'] = new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', scope.audioContext), 100, 100);
+        scope.ColorsDetected['red'] = new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', scope.audioContext), 100, 100);
         scope.ColorsDetected['yellow'] = new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', scope.audioContext), 100, 100);
-        scope.ColorsDetected['red'] = new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.wav', scope.audioContext), 100, 100);
+        scope.ColorsDetected['magenta'] = new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.wav', scope.audioContext), 100, 100);
         
         tracking.ColorTracker.registerColor('red', function(r, g, b) {
             if (r > 100 && g < 50 && b < 50) {
@@ -108,7 +108,7 @@ var app = {
             return false;
         });
         
-        var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow', 'red']);
+        var colors = new tracking.ColorTracker(['magenta',  'yellow', 'red']);
 
         colors.on('track', function(event) {
             scope.canvasManager && scope.canvasManager.resetCanvas();
