@@ -3,7 +3,7 @@
  */
 
 import NetworkManager from "./network/NetworkManager";
-import * as util from "./misc/util"
+import * as util from "./misc/util";
 import $ from "jquery";
 import Sound from "./audio/Sound";
 import DetectedColor from "./DetectedColor";
@@ -27,10 +27,16 @@ var app = {
     },
     
     registerNetworkUI: function() {
+        var $networkUI = $('.network-ui');
+        
+        $('.close', $networkUI).on('click', function(e) {
+            $networkUI.toggleClass('hidden',true);
+        });
+        
         window.addEventListener('keydown', function(e) {
             switch(e.keyCode) {
                 case 32: // SPACE
-                    $('.network-ui').toggleClass('hidden');
+                    $networkUI.toggleClass('hidden');
                     break;
                 
                 default:
@@ -43,7 +49,7 @@ var app = {
     getLocalWebcam: function (cb) {
         navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
         // Put user's video directly into #myVideo
-        navigator.getUserMedia({video: true, audio: true}, function (localMediaStream) {
+        navigator.getUserMedia({video: true, audio: false}, function (localMediaStream) {
             var video = document.querySelector('#myVideo');
             video.src = window.URL.createObjectURL(localMediaStream);
 
@@ -126,3 +132,4 @@ var app = {
 };
 
 app.init();
+workshop.app = app;
