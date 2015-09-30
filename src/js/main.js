@@ -112,6 +112,7 @@ var app = {
         var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow', 'red']);
 
         colors.on('track', function(event) {
+            scope.canvasManager && scope.canvasManager.resetCanvas();
             if (event.data.length === 0) {
 
                 for(var color in scope.ColorsDetected){
@@ -131,6 +132,8 @@ var app = {
                             scope.ColorsDetected[rect.color].updateEffects();
                         }
                     }
+                    
+                    scope.canvasManager && scope.canvasManager.onDetectedColor(rect);
                 });
             }
         });
