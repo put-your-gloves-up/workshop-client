@@ -18,6 +18,7 @@ var app = {
         this.getLocalWebcam(function() {
             scope.initNetwork.bind(scope).call();
             scope.initSound.bind(scope, scope.initColorTracker.bind(scope)).call();
+            scope.loadSounds.bind(scope).call();
         });
         
         this.bindUIActions();
@@ -90,7 +91,7 @@ var app = {
 
         cb && cb();
     },
-    
+
     initColorTracker: function() {
 
         var scope = this;
@@ -138,6 +139,53 @@ var app = {
         });
 
         tracking.track('#myVideo', colors);
+    },
+
+    /**
+     * Load sample for each detected color
+     * @return {void}
+     */
+
+    loadSounds: function(){
+        var i = 0;
+        var scope = this;
+        for(var color in scope.ColorsDetected){
+            scope.loadSound(scope.ColorsDetected[color], function(){
+                i++;
+                if(i == Object.keys(scope.ColorsDetected).length){
+                    scope.isReady = true;
+                    scope.playSound();
+                }
+            });
+        }
+
+    },
+
+    /**
+     * Load sound
+     * @return {void}
+     */
+
+    loadSound: function(color, cb){
+        var scope = this;
+        color.sound.loadSound(function(){
+            cb && cb();
+        });
+
+    },
+
+    /**
+     * Play all song in same time
+     * @return {void}
+     */
+
+    playSound: function(){
+        var scope = this;
+        if(scope.isReady){
+            for(var color in scope.ColorsDetected){
+                scope.ColorsDetected[color].sound.playSound();
+            }
+        }
     }
 };
 

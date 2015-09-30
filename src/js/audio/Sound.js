@@ -6,6 +6,7 @@ export default class Sound {
     constructor(url, context) {
         this.url = url;
         this.context = context;
+        this.buffer;
 
         this.init();
     }
@@ -16,7 +17,7 @@ export default class Sound {
      */
 
     init() {
-        this.loadSound(this.url);
+        //this.loadSound(this.url);
     }
 
     /**
@@ -59,21 +60,21 @@ export default class Sound {
 
     /**
      * Connect filters and play sound
-     * @param {Object} buffer
      * @return {void}
      */
 
-    loadSound(url){
+    loadSound(cb){
         var request = new XMLHttpRequest();
-        request.open('GET', url, true);
+        request.open('GET', this.url, true);
         request.responseType = 'arraybuffer';
 
-        var self = this;
+        var scope = this;
 
         request.onload = function() {
-            self.context.decodeAudioData( request.response,
+            scope.context.decodeAudioData( request.response,
                 function(buffer) {
-                    self.playSound(buffer);
+                    scope.buffer = buffer;
+                    cb && cb();
                 }, function(){});
         }
         request.send();
@@ -81,14 +82,13 @@ export default class Sound {
 
     /**
      * Connect filters and play sound
-     * @param {Object} buffer
      * @return {void}
      */
 
-    playSound(buffer){
-        if(buffer){
+    playSound(){
+        if(this.buffer){
             this.source = this.context.createBufferSource();
-            this.source.buffer = buffer;
+            this.source.buffer = this.buffer;
 
             // Define filters
             this.volume = this.context.createGain();
