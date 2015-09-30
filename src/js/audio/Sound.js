@@ -48,6 +48,18 @@ export default class Sound {
     }
 
     /**
+     * Set Lowpass
+     * @param {Number} level
+     * @return {void}
+     */
+
+    setQ(q){
+        if(this.lowpass){
+            this.lowpass.Q.value = q;
+        }
+    }
+
+    /**
      * Connect filters and play sound
      * @param {Object} buffer
      * @return {void}
