@@ -88,19 +88,18 @@ var app = {
 
         this.audioContext = new AudioContext();
 
-        // Define color
-
-        this.ColorsDetected = [];
-
-        this.ColorsDetected['magenta'] = new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100);
-        this.ColorsDetected['yellow'] = new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100);
-        this.ColorsDetected['red'] = new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.wav', this.audioContext), 100, 100);
-
         cb && cb();
     },
     
     initColorTracker: function() {
+
         var scope = this;
+
+        scope.ColorsDetected = {};
+
+        scope.ColorsDetected['magenta'] = new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', scope.audioContext), 100, 100);
+        scope.ColorsDetected['yellow'] = new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', scope.audioContext), 100, 100);
+        scope.ColorsDetected['red'] = new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.wav', scope.audioContext), 100, 100);
         
         tracking.ColorTracker.registerColor('red', function(r, g, b) {
             if (r > 100 && g < 50 && b < 50) {
