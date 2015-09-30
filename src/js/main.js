@@ -75,7 +75,7 @@ var app = {
         // Define sounds
         this.bass = new Sound('audio/PO_DualBass120C-02.wav', this.audioContext);
         this.beats = new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext);
-        this.synth = new Sound('audio/PO_Massaw120E-02.wav', this.audioContext);
+        this.synth = new Sound('audio/PO_Massaw120C-02.wav', this.audioContext);
 
         cb && cb();
     },
@@ -109,15 +109,25 @@ var app = {
                     switch(rect.color) {
 
                         case 'magenta' :
-                            scope.bass.setVolume(1);
+                            scope.bass.setVolume(10);
+                            if(rect.y != 0) {
+                                scope.bass.setLowPass(rect.y);
+                            }
                             break;
 
                         case 'yellow' :
-                            scope.beats.setVolume(0.6);
+                            scope.beats.setVolume(1);
+                            if(rect.y != 0) {
+                                scope.beats.setLowPass(rect.y * 10);
+                            }
                             break;
 
                         case 'red' :
-                            scope.synth.setVolume(0.2);
+                            scope.synth.setVolume(1);
+                            console.log(rect.y * 4);
+                            if(rect.y != 0) {
+                                scope.synth.setLowPass(rect.y * 10);
+                            }
                             break;
 
                     }
