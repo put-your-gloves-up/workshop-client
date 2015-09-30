@@ -146,3 +146,4 @@ var app = {
 };
 
 app.init();
+workshop.app = app;

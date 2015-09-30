@@ -15,6 +15,13 @@ export default class NetworkManager {
     
     init() {
         this.socket.on('connect', this.socketReady.bind(this));
+        
+        this.bindUIActions();
+    }
+    
+    bindUIActions() {
+        // listen for click on users list
+        $('body').on('click', '#users a', this.askCall.bind(this));
     }
 
     /*******************
@@ -54,18 +61,21 @@ export default class NetworkManager {
     
     getUsersList(users) {
         console.log('get users list', users);
+        
+        $('#users').empty();
 
-        // display list
-        var i = 0;
-        for(i; i < users.length; i++){
-            // don't display the current user (hein)
-            if(users[i] != this.uid){
-                $('#users').append('<li><a data-user="' + users[i] + '">Call ' + users[i] + '</a></li>');
+        if(users.length > 1) {
+            // display list
+            var i = 0;
+            for (i; i < users.length; i++) {
+                // don't display the current user (hein)
+                if (users[i] != this.uid) {
+                    $('#users').append('<li><a class="padding-std" data-user="' + users[i] + '">' + users[i] + '</a></li>');
+                }
             }
+        } else {
+            $('#users').append('<li>Nobody\'s available</li>');
         }
-
-        // listen for click on users list
-        $('body').on('click', '#users a', this.askCall.bind(this));
     }
 
     /*******************
@@ -123,9 +133,11 @@ export default class NetworkManager {
 
         // call someone - send our audio stream
         this.peerCall = this.peerConn.call(this.cid, stream);
-
-        // listen call for stream
-        this.peerCall.on('stream', this.receiveStream.bind(this));
+        
+        /*this.peerCall.on('stream', this.receiveStream.bind(this));
+        this.socket.on('peerToPeer', this.receiveData.bind(this));*/
+        // We do not need to listen for stream and peerToPeer events
+        // cause the target will call us back as an answer, so we'll pass in "receiveCall()"
     }
 
     /*******************
@@ -142,6 +154,10 @@ export default class NetworkManager {
 
         // listen call for stream
         this.peerCall.on('stream', this.receiveStream.bind(this));
+        this.socket.on('peerToPeer', this.receiveData.bind(this));
+
+        // hide networkUI
+        $('.network-ui').toggleClass('hidden',true);
 
         // get our micro stream
         this.answerCall(workshop.localWebcamStream);
@@ -166,6 +182,18 @@ export default class NetworkManager {
 
         // push the stream to video
         $('#distVideo')[0].src = window.URL.createObjectURL(stream);
+    }
+    
+    /*
+     * DATA
+     */
+    
+    receiveData(data) {
+        console.log(data);
+    }
+    
+    sendData(data) {
+        this.socket.emit('peerToPeer', data);
     }
     
 }
