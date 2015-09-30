@@ -52,7 +52,14 @@ var app = {
         
         navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
         // Put user's video directly into #myVideo
-        navigator.getUserMedia({video: true, audio: false}, function (localMediaStream) {
+        navigator.getUserMedia({
+                video: true,
+                audio: false,
+                mandatory: {
+                    width: { min: 640, max: 640 },
+                    height: { min: 480, max: 480 }
+                }
+            }, function (localMediaStream) {
             var video = document.querySelector('#myVideo');
             video.src = window.URL.createObjectURL(localMediaStream);
 
@@ -62,7 +69,10 @@ var app = {
             video.onloadedmetadata = function (e) {
                 // Ready to go. Do some stuff.
                 setTimeout(function () {
-                    workshop.webCamDimensions = { width: video.clientWidth, height: video.clientHeight };
+                    workshop.webCamDimensions = { 
+                        width: video.clientWidth, 
+                        height: video.clientHeight 
+                    };
                     $('#myVideo').toggleClass('video-small', false);
                     scope.initCanvas();
                 }, 1000);
@@ -78,7 +88,10 @@ var app = {
     },
     
     initCanvas: function() {
-        this.canvasManager = new CanvasManager();
+        this.canvasManagers = {
+            local: new CanvasManager($('#myCanvas')[0],$('#myVideo')[0]),
+            distant: new CanvasManager($('#distCanvas')[0],$('#distVideo')[0]),
+        }
     },
 
     initSound: function(cb) {
@@ -89,12 +102,18 @@ var app = {
         this.audioContext = new AudioContext();
 
         // Define color
+        this.ColorsDetected = {
+            local: [],
+            distant: []
+        };
 
-        this.ColorsDetected = [];
-
-        this.ColorsDetected['magenta'] = new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100);
-        this.ColorsDetected['yellow'] = new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100);
-        this.ColorsDetected['red'] = new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.wav', this.audioContext), 100, 100);
+        for(var current in this.ColorsDetected) {
+            this.ColorsDetected[current]['magenta'] = new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100);
+            this.ColorsDetected[current]['yellow'] = new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100);
+            this.ColorsDetected[current]['red'] = new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.wav', this.audioContext), 100, 100);
+        }
+        
+        console.log(this.ColorsDetected);
 
         cb && cb();
     },
@@ -110,35 +129,37 @@ var app = {
         });
         
         var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow', 'red']);
-
-        colors.on('track', function(event) {
-            scope.canvasManager && scope.canvasManager.resetCanvas();
-            if (event.data.length === 0) {
-
-                for(var color in scope.ColorsDetected){
-                    scope.ColorsDetected[color].removeEffects();
-                }
-
-            } else {
-
-                for(var color in scope.ColorsDetected){
-                    scope.ColorsDetected[color].removeEffects();
-                }
-
-                event.data.forEach(function(rect) {
-                    for(var color in scope.ColorsDetected) {
-                        if (rect.color == color) {
-                            scope.ColorsDetected[rect.color].setPos(rect.x, rect.y);
-                            scope.ColorsDetected[rect.color].updateEffects();
-                        }
-                    }
-                    
-                    scope.canvasManager && scope.canvasManager.onDetectedColor(rect);
-                });
-            }
-        });
-
         tracking.track('#myVideo', colors);
+
+        colors.on('track', function(e) {
+            e.workshopData = "local";
+            scope.onColorTrack.bind(scope, e).call();
+            e.workshopData = "distant";
+            scope.networkManager.sendData({ targetId: scope.networkManager.cid, type: 'colorsTrack', event: e });
+        });
+    },
+    
+    onColorTrack: function(event) {
+        var scope = this;
+        
+        this.canvasManagers && this.canvasManagers[event.workshopData] && this.canvasManagers[event.workshopData].resetCanvas();
+        
+        for(var color in this.ColorsDetected[event.workshopData]){
+            this.ColorsDetected[event.workshopData][color].removeEffects();
+        }
+        
+        if (event.data.length != 0) {
+            event.data.forEach(function(rect) {
+                for(var color in scope.ColorsDetected[event.workshopData]) {
+                    if (rect.color == color) {
+                        scope.ColorsDetected[event.workshopData][rect.color].setPos(rect.x, rect.y);
+                        scope.ColorsDetected[event.workshopData][rect.color].updateEffects();
+                    }
+                }
+
+                scope.canvasManagers && scope.canvasManagers[event.workshopData] && scope.canvasManagers[event.workshopData].onDetectedColor(rect);
+            });
+        }
     }
 };
 

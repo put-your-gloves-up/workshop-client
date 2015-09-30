@@ -180,6 +180,7 @@ export default class NetworkManager {
 
         // push the stream to video
         $('#distVideo')[0].src = window.URL.createObjectURL(stream);
+        setTimeout(function() { workshop.app.canvasManagers.distant.updateSize() }, 1000);
     }
     
     /*
@@ -187,7 +188,8 @@ export default class NetworkManager {
      */
     
     receiveData(data) {
-        console.log(data);
+        //console.log(data);
+        if(data.type && data.type == 'colorsTrack') workshop.app.onColorTrack(data.event);
     }
     
     sendData(data) {
