@@ -36,7 +36,7 @@ body {
     mix-blend-mode: color;
   }
   
-  video {
+  video, canvas {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -50,6 +50,10 @@ body {
       max-width: 480px;
       max-height: 320px;
     }
+  }
+  
+  canvas {
+    z-index: 3;
   }
 }
 

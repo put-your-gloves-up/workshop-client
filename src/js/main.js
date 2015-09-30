@@ -3,6 +3,7 @@
  */
 
 import NetworkManager from "./network/NetworkManager";
+import CanvasManager from "./canvas/CanvasManager";
 import * as util from "./misc/util"
 import $ from "jquery";
 import Sound from "./audio/Sound";
@@ -46,6 +47,8 @@ var app = {
     },
     
     getLocalWebcam: function (cb) {
+        var scope = this;
+        
         navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
         // Put user's video directly into #myVideo
         navigator.getUserMedia({video: true, audio: false}, function (localMediaStream) {
@@ -53,13 +56,14 @@ var app = {
             video.src = window.URL.createObjectURL(localMediaStream);
 
             workshop.localWebcamStream = localMediaStream;
-
             // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
             // See crbug.com/110938.
             video.onloadedmetadata = function (e) {
                 // Ready to go. Do some stuff.
                 setTimeout(function () {
+                    workshop.webCamDimensions = { width: video.clientWidth, height: video.clientHeight };
                     $('#myVideo').toggleClass('video-small', false);
+                    scope.initCanvas();
                 }, 1000);
             };
 
@@ -70,6 +74,10 @@ var app = {
 
     initNetwork: function () {
         this.networkManager = new NetworkManager();
+    },
+    
+    initCanvas: function() {
+        this.canvasManager = new CanvasManager();
     },
 
     initSound: function(cb) {
