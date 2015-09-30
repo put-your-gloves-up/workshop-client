@@ -75,10 +75,10 @@ var app = {
                     };
                     $('#myVideo').toggleClass('video-small', false);
                     scope.initCanvas();
+
+                    cb && cb();
                 }, 1000);
             };
-
-            cb && cb();
 
         }, util.log);
     },
@@ -90,7 +90,7 @@ var app = {
     initCanvas: function() {
         this.canvasManagers = {
             local: new CanvasManager($('#myCanvas')[0],$('#myVideo')[0]),
-            distant: new CanvasManager($('#distCanvas')[0],$('#distVideo')[0]),
+            distant: new CanvasManager($('#distCanvas')[0],$('#distVideo')[0])
         }
     },
 
@@ -100,6 +100,13 @@ var app = {
         window.webkitAudioContext;
 
         this.audioContext = new AudioContext();
+        
+        cb && cb();
+    },
+    
+    initColorTracker: function() {
+
+        var scope = this;
 
         // Define color
         this.ColorsDetected = {
@@ -113,22 +120,14 @@ var app = {
             this.ColorsDetected[current]['red'] = new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.wav', this.audioContext), 100, 100);
         }
         
-        console.log(this.ColorsDetected);
-
-        cb && cb();
-    },
-    
-    initColorTracker: function() {
-        var scope = this;
-        
         tracking.ColorTracker.registerColor('red', function(r, g, b) {
             if (r > 100 && g < 50 && b < 50) {
                 return true;
             }
             return false;
         });
-        
-        var colors = new tracking.ColorTracker(['magenta', 'cyan', 'yellow', 'red']);
+
+        var colors = new tracking.ColorTracker(['magenta',  'yellow', 'red']);
         tracking.track('#myVideo', colors);
 
         colors.on('track', function(e) {

@@ -6,10 +6,6 @@ export default class Sound {
     constructor(url, context) {
         this.url = url;
         this.context = context;
-        this.source = '';
-        this.volume = '';
-        this.distortion = '';
-        this.lowpass = '';
 
         this.init();
     }
@@ -37,13 +33,15 @@ export default class Sound {
 
     /**
      * Set Lowpass
-     * @param {Number} level
+     * @param {String} type
+     * @param {Number} frequency
      * @return {void}
      */
 
-    setLowPass(frequency){
-        if(this.lowpass){
-            this.lowpass.frequency.value = frequency;
+    setBiQuad(type, frequency){
+        if(this.biquad){
+            this.biquad.frequency.value = frequency;
+            this.biquad.type = type;
         }
     }
 
@@ -54,8 +52,8 @@ export default class Sound {
      */
 
     setQ(q){
-        if(this.lowpass){
-            this.lowpass.Q.value = q;
+        if(this.biquad){
+            this.biquad.Q.value = q;
         }
     }
 
@@ -100,15 +98,15 @@ export default class Sound {
             var distortion = this.context.createWaveShaper();
             distortion.curve = this.makeDistorsionCurve(0);
 
-            this.lowpass = this.context.createBiquadFilter();
-            this.lowpass.type = 'lowpass'; // Low-pass filter. See BiquadFilterNode docs
-            this.lowpass.frequency.value = 100; // Set cutoff to 440 HZ
+            this.biquad = this.context.createBiquadFilter();
+            this.biquad.type = 'lowpass'; // Low-pass filter. See BiquadFilterNode docs
+            this.biquad.frequency.value = 100; // Set cutoff to 440 HZ
 
             // Apply filters
             this.source.connect(analyser);
             analyser.connect(distortion);
-            distortion.connect(this.lowpass);
-            this.lowpass.connect(this.volume);
+            distortion.connect(this.biquad);
+            this.biquad.connect(this.volume);
             this.volume.connect(this.context.destination);
 
             this.source.loop = true;
