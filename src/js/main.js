@@ -132,7 +132,7 @@ var app = {
             e.workshopData = "local";
             scope.onColorTrack.bind(scope, e).call();
             e.workshopData = "distant";
-            scope.networkManager.sendData({ targetId: scope.networkManager.cid, type: 'colorsTrack', event: e });
+            scope.networkManager.cid && scope.networkManager.sendData({ targetId: scope.networkManager.cid, type: 'colorsTrack', event: e });
         });
     },
 

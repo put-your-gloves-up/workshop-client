@@ -193,6 +193,7 @@ export default class NetworkManager {
     }
     
     sendData(data) {
+        //console.log(data);
         this.socket.emit('peerToPeer', data);
     }
     
