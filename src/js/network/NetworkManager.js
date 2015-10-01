@@ -149,6 +149,8 @@ export default class NetworkManager {
 
         // call
         this.peerCall = call;
+        
+        this.cid = this.peerCall.peer;
 
         // listen call for stream
         this.peerCall.on('stream', this.receiveStream.bind(this));
