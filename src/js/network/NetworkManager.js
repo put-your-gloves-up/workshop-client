@@ -189,7 +189,7 @@ export default class NetworkManager {
     
     receiveData(data) {
         //console.log(data);
-        if(data.type && data.type == 'colorsTrack') workshop.app.onColorTrack(data.event);
+        if(data.type && data.type == 'colorsTrack') workshop.app.webcamManagers.local.onColorTrack(data.event);
     }
     
     sendData(data) {
