@@ -1,6 +1,7 @@
 /**
  * Created by Vincent on 29/09/2015.
  */
+import gsap from 'gsap';
 
 export default class Sound {
     constructor(url, context) {
@@ -28,7 +29,11 @@ export default class Sound {
 
     setVolume(level){
         if(this.volume){
-            this.volume.gain.value = level;
+
+            gsap.to(this.volume.gain, 1, {
+                value: level,
+                ease:Circ.easeOut
+            });
         }
     }
 

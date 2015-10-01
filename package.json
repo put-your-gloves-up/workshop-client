@@ -22,6 +22,7 @@
     "browserify-shim": "^3.8.6",
     "browserify-swap": "^0.2.2",
     "es6ify": "^1.6.0",
+    "gsap": "^1.18.0",
     "gulp": "^3.8.11",
     "gulp-changed": "^1.2.1",
     "gulp-clean": "^0.3.1",
