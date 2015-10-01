@@ -1,7 +1,7 @@
 /**
  * Created by jerek0 on 30/09/15.
  */
-
+import * as util from '../misc/util';
 import $ from 'jquery';
 
 export default class WebcamCanvas {
@@ -14,6 +14,12 @@ export default class WebcamCanvas {
 
     init() {
         this.updateSize();
+    }
+    
+    render() {
+        
+        
+        window.requestAnimationFrame(this.render);
     }
 
     updateSize() {

@@ -180,7 +180,7 @@ export default class NetworkManager {
 
         // push the stream to video
         $('#distVideo')[0].src = window.URL.createObjectURL(stream);
-        setTimeout(function() { workshop.app.canvasManagers.distant.updateSize() }, 1000);
+        setTimeout(function() { workshop.app.webcamManagers.distant.canvasManager.updateSize() }, 1000);
     }
     
     /*

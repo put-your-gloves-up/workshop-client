@@ -5,6 +5,8 @@
 /**
  * Created by Vincent on 29/09/2015.
  */
+import DisplayZone from './canvas/DisplayZone';
+import * as util from './misc/util';
 
 export default class DetectedColor {
     constructor(color, sound, initialPosX, initialPosY) {
@@ -25,6 +27,12 @@ export default class DetectedColor {
 
     init() {
         // do something
+    }
+    
+    render() {
+
+        
+        window.requestAnimationFrame(this.render.bind(this));
     }
 
     /**

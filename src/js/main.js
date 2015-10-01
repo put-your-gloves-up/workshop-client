@@ -3,17 +3,22 @@
  */
 
 import NetworkManager from "./network/NetworkManager";
-import WebcamCanvas from "./canvas/WebcamCanvas";
+import WebcamManager from "./WebcamManager";
 import * as util from "./misc/util";
 import $ from "jquery";
 import Sound from "./audio/Sound";
 import DetectedColor from "./DetectedColor";
 
 var app = {
+    
+    webcamManagers: null,
+    
     init: function () {
         window.workshop = {};
 
         var scope = this;
+        
+        this.initWebcamManagers();
 
         this.getLocalWebcam(function() {
             scope.initNetwork.bind(scope).call();
@@ -23,6 +28,12 @@ var app = {
 
         this.bindUIActions();
     },
+
+    /* #################
+     *
+     * INTERFACE RELATED
+     *
+     * ################# */
 
     bindUIActions: function() {
         this.registerNetworkUI();
@@ -46,6 +57,19 @@ var app = {
                     break;
             }
         });
+    },
+
+    /* #################
+     *
+     * MATERIAL RELATED
+     *
+     * ################# */
+
+    initWebcamManagers: function() {
+        this.webcamManagers = {
+            local: new WebcamManager('#myCanvas','#myVideo'),
+            distant: new WebcamManager('#distCanvas','#distVideo')
+        }
     },
 
     getLocalWebcam: function (cb) {
@@ -72,7 +96,9 @@ var app = {
                     };
                     console.log(workshop.webCamDimensions);
                     $('#myVideo').toggleClass('video-small', false);
-                    scope.initCanvas();
+                    for(var current in scope.webcamManagers) {
+                        scope.webcamManagers[current].initCanvas();
+                    }
                 }, 1000);
             };
 
@@ -81,17 +107,51 @@ var app = {
         }, util.log);
     },
 
+    /* #################
+     *
+     * NETWORK RELATED
+     *
+     * ################# */
+    
     initNetwork: function () {
         this.networkManager = new NetworkManager();
     },
 
-    initCanvas: function() {
-        this.canvasManagers = {
-            local: new WebcamCanvas($('#myCanvas')[0],$('#myVideo')[0]),
-            distant: new WebcamCanvas($('#distCanvas')[0],$('#distVideo')[0])
-        }
+    /* #################
+     *
+     * COLORS RELATED
+     *
+     * ################# */
+
+    initColorTracker: function() {
+        // Define local colors
+        this.webcamManagers.local.addDetectedColor(new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100));
+        this.webcamManagers.local.addDetectedColor(new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100));
+        this.webcamManagers.local.addDetectedColor(new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext), 100, 100));
+
+        // Define distant colors
+        this.webcamManagers.distant.addDetectedColor(new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100));
+        this.webcamManagers.distant.addDetectedColor(new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100));
+        this.webcamManagers.distant.addDetectedColor(new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext), 100, 100));
+
+        // Add custom color trackers
+        tracking.ColorTracker.registerColor('red', function(r, g, b) {
+            if (r > 100 && g < 50 && b < 50) {
+                return true;
+            }
+            return false;
+        });
+        
+        // Track on local webcam only
+        this.webcamManagers.local.trackColors();
     },
 
+    /* #################
+     *
+     * SOUND RELATED
+     *
+     * ################# */
+    
     initSound: function(cb) {
         // Define audio context
         window.AudioContext = window.AudioContext ||
@@ -102,63 +162,6 @@ var app = {
         cb && cb();
     },
 
-    initColorTracker: function() {
-
-        var scope = this;
-
-        // Define color
-        this.ColorsDetected = {
-            local: [],
-            distant: []
-        };
-
-        for(var current in this.ColorsDetected) {
-            this.ColorsDetected[current]['magenta'] = new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100);
-            this.ColorsDetected[current]['yellow'] = new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100);
-            this.ColorsDetected[current]['red'] = new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext), 100, 100);
-        }
-
-        tracking.ColorTracker.registerColor('red', function(r, g, b) {
-            if (r > 100 && g < 50 && b < 50) {
-                return true;
-            }
-            return false;
-        });
-
-        var colors = new tracking.ColorTracker(['magenta',  'yellow', 'red']);
-        tracking.track('#myVideo', colors);
-
-        colors.on('track', function(e) {
-            e.workshopData = "local";
-            scope.onColorTrack.bind(scope, e).call();
-            e.workshopData = "distant";
-            scope.networkManager.cid && scope.networkManager.sendData({ targetId: scope.networkManager.cid, type: 'colorsTrack', event: e });
-        });
-    },
-
-    onColorTrack: function(event) {
-        var scope = this;
-
-        this.canvasManagers && this.canvasManagers[event.workshopData] && this.canvasManagers[event.workshopData].resetCanvas();
-
-        for(var color in this.ColorsDetected[event.workshopData]){
-            this.ColorsDetected[event.workshopData][color].removeEffects();
-        }
-
-        if (event.data.length != 0) {
-            event.data.forEach(function(rect) {
-                for(var color in scope.ColorsDetected[event.workshopData]) {
-                    if (rect.color == color) {
-                        scope.ColorsDetected[event.workshopData][rect.color].setPos(rect.x, rect.y);
-                        scope.ColorsDetected[event.workshopData][rect.color].updateEffects();
-                    }
-                }
-
-                scope.canvasManagers && scope.canvasManagers[event.workshopData] && scope.canvasManagers[event.workshopData].onDetectedColor(rect);
-            });
-        }
-    },
-
     /**
      * Load sample for each detected color
      * @return {void}
@@ -166,34 +169,17 @@ var app = {
 
     loadSounds: function(){
         var i = 0,
-            j = 0;
-        var scope = this;
-        for(var current in scope.ColorsDetected){
-            j++;
-            for(var color in scope.ColorsDetected[current]) {
-                scope.loadSound(scope.ColorsDetected[current][color], function () {
-                    i++;
-                    if (i == (Object.keys(scope.ColorsDetected.local).length + Object.keys(scope.ColorsDetected.distant).length)) {
-                        scope.isReady = true;
-                        scope.playSound();
-                    }
-                });
-            }
+            scope = this;
+        
+        for(var current in scope.webcamManagers){
+            scope.webcamManagers[current].loadSounds(function() {
+                i++;
+                if (i == Object.keys(scope.webcamManagers).length) {
+                    scope.isReady = true;
+                    scope.playSound();
+                }
+            })
         }
-
-    },
-
-    /**
-     * Load sound
-     * @return {void}
-     */
-
-    loadSound: function(color, cb){
-        var scope = this;
-        color.sound.loadSound(function(){
-            cb && cb();
-        });
-
     },
 
     /**
@@ -204,9 +190,9 @@ var app = {
     playSound: function() {
         var scope = this;
         if (scope.isReady) {
-            for(var current in scope.ColorsDetected) {
-                for (var color in scope.ColorsDetected[current]) {
-                    scope.ColorsDetected[current][color].sound.playSound();
+            for(var current in scope.webcamManagers) {
+                for (var color in scope.webcamManagers[current].detectedColors) {
+                    scope.webcamManagers[current].detectedColors[color].sound.playSound();
                 }
             }
         }
