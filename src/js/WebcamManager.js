@@ -3,20 +3,27 @@
  */
 import $ from 'jquery';
 import WebcamCanvas from './canvas/WebcamCanvas';
+import SpectralCanvas from './canvas/SpectralCanvas';
 
 export default class WebcamManager {
 
-    constructor(canvas, video) {
+    constructor(canvas, video, spectralCanvas) {
         this.canvasId = canvas;
         this.canvas = $(this.canvasId)[0];
         this.videoId = video;
         this.video = $(this.videoId)[0];
+        this.spectralCanvasId = spectralCanvas;
+        this.spectralCanvas = $(spectralCanvas)[0];
         
         this.detectedColors = {};
     }
     
     initCanvas() {
         this.canvasManager = new WebcamCanvas(this.canvas,this.video);
+    }
+
+    initSpectralCanvas() {
+        this.spectralCanvasManager = new SpectralCanvas(this.spectralCanvas, this.detectedColors);
     }
 
     addDetectedColor(detectedColor) {

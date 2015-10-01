@@ -67,8 +67,8 @@ var app = {
 
     initWebcamManagers: function() {
         this.webcamManagers = {
-            local: new WebcamManager('#myCanvas','#myVideo'),
-            distant: new WebcamManager('#distCanvas','#distVideo')
+            local: new WebcamManager('#myCanvas','#myVideo', '#myVisualizer'),
+            distant: new WebcamManager('#distCanvas','#distVideo', '#distVisualizer')
         }
     },
 
@@ -125,14 +125,14 @@ var app = {
 
     initColorTracker: function() {
         // Define local colors
-        this.webcamManagers.local.addDetectedColor(new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100));
+        //this.webcamManagers.local.addDetectedColor(new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100));
         this.webcamManagers.local.addDetectedColor(new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100));
-        this.webcamManagers.local.addDetectedColor(new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext), 100, 100));
+        //this.webcamManagers.local.addDetectedColor(new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext), 100, 100));
 
         // Define distant colors
-        this.webcamManagers.distant.addDetectedColor(new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100));
+        //this.webcamManagers.distant.addDetectedColor(new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100));
         this.webcamManagers.distant.addDetectedColor(new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100));
-        this.webcamManagers.distant.addDetectedColor(new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext), 100, 100));
+        //this.webcamManagers.distant.addDetectedColor(new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext), 100, 100));
 
         // Add custom color trackers
         tracking.ColorTracker.registerColor('red', function(r, g, b) {
@@ -194,6 +194,7 @@ var app = {
                 for (var color in scope.webcamManagers[current].detectedColors) {
                     scope.webcamManagers[current].detectedColors[color].sound.playSound();
                 }
+                scope.webcamManagers[current].initSpectralCanvas();
             }
         }
     }

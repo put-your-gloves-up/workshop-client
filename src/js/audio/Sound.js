@@ -99,24 +99,99 @@ export default class Sound {
             this.volume = this.context.createGain();
             this.volume.gain.value = 0;
 
-            var analyser = this.context.createAnalyser();
-            var distortion = this.context.createWaveShaper();
-            distortion.curve = this.makeDistorsionCurve(0);
+            this.analyser = this.context.createAnalyser();
+            this.analyser.fftSize = 64;
+            //var distortion = this.context.createWaveShaper();
+            //distortion.curve = this.makeDistorsionCurve(0);
 
             this.biquad = this.context.createBiquadFilter();
             this.biquad.type = 'lowpass'; // Low-pass filter. See BiquadFilterNode docs
             this.biquad.frequency.value = 100; // Set cutoff to 440 HZ
 
             // Apply filters
-            this.source.connect(analyser);
-            analyser.connect(distortion);
-            distortion.connect(this.biquad);
-            this.biquad.connect(this.volume);
+            this.source.connect(this.biquad);
+            this.biquad.connect(this.analyser);
+            this.analyser.connect(this.volume);
             this.volume.connect(this.context.destination);
 
             this.source.loop = true;
             this.source.start(0);
+
+            // Start visualisation
+            //this.initDraw();
         }
+    }
+
+    /**
+     * Init drawing
+     * @return {void}
+     */
+
+    initDraw(){
+        this.visualizer = document.querySelector('#visualizer');
+        this.visualizerCtx = this.visualizer.getContext("2d");
+
+        this.bufferLength = this.analyser.fftSize;
+        this.dataArray = new Uint8Array(this.bufferLength);
+
+        console.log(this);
+
+        this.draw();
+    }
+
+    /**
+     * Render the spectrum in canvas
+     * @return {void}
+     */
+
+    draw(){
+        //console.log('enter drawing methods');
+        this.width = this.visualizer.width;
+        this.height = this.visualizer.height;
+
+        this.analyser.getByteFrequencyData(this.dataArray);
+        /*
+        this.visualizerCtx.fillStyle = 'rgb(200, 200, 200)';
+        this.visualizerCtx.fillRect(0, 0, this.width, this.height);
+
+        this.visualizerCtx.lineWidth = 2;
+        this.visualizerCtx.strokeStyle = 'rgb(0, 0, 0)';
+
+        this.visualizerCtx.beginPath();
+
+        var sliceWidth = this.width * 1.0 / this.bufferLength;
+        var x = 0;
+
+        for(var i = 0; i < this.bufferLength; i++) {
+
+            var v = this.dataArray[i] / 128.0;
+            var y = v * this.height/2;
+
+            if(i === 0) {
+                this.visualizerCtx.moveTo(x, y);
+            } else {
+                this.visualizerCtx.lineTo(x, y);
+            }
+
+            x += sliceWidth;
+        }*/
+
+        this.visualizerCtx.clearRect(0, 0, this.width, this.height);
+
+        var barWidth = (this.width / this.bufferLength) * 2.5;
+        var barHeight;
+        var x = 0;
+
+        for(var i = 0; i < this.bufferLength; i++) {
+            barHeight = this.dataArray[i];
+
+            this.visualizerCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
+            this.visualizerCtx.fillRect(x,this.height-barHeight/2,barWidth,barHeight/2);
+
+            x += barWidth + 1;
+        }
+
+        this.drawVisual = requestAnimationFrame(this.draw.bind(this));
     }
 
     /**
