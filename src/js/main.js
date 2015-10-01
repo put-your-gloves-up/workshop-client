@@ -18,6 +18,7 @@ var app = {
         this.getLocalWebcam(function() {
             scope.initNetwork.bind(scope).call();
             scope.initSound.bind(scope, scope.initColorTracker.bind(scope)).call();
+            scope.loadSounds.bind(scope).call();
         });
 
         this.bindUIActions();
@@ -117,7 +118,7 @@ var app = {
         for(var current in this.ColorsDetected) {
             this.ColorsDetected[current]['magenta'] = new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100);
             this.ColorsDetected[current]['yellow'] = new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100);
-            this.ColorsDetected[current]['red'] = new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.wav', this.audioContext), 100, 100);
+            this.ColorsDetected[current]['red'] = new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext), 100, 100);
         }
 
         tracking.ColorTracker.registerColor('red', function(r, g, b) {
@@ -158,6 +159,60 @@ var app = {
 
                 scope.canvasManagers && scope.canvasManagers[event.workshopData] && scope.canvasManagers[event.workshopData].onDetectedColor(rect);
             });
+        }
+    },
+
+    /**
+     * Load sample for each detected color
+     * @return {void}
+     */
+
+    loadSounds: function(){
+        var i = 0,
+            j = 0;
+        var scope = this;
+        for(var current in scope.ColorsDetected){
+            j++;
+
+            for(var color in scope.ColorsDetected[current]) {
+                scope.loadSound(scope.ColorsDetected[current][color], function () {
+                    i++;
+                    if (i == Object.keys(scope.ColorsDetected[current]).length && j == Object.keys(scope.ColorsDetected).length) {
+                        scope.isReady = true;
+                        scope.playSound();
+                    }
+                });
+            }
+        }
+
+    },
+
+    /**
+     * Load sound
+     * @return {void}
+     */
+
+    loadSound: function(color, cb){
+        var scope = this;
+        color.sound.loadSound(function(){
+            cb && cb();
+        });
+
+    },
+
+    /**
+     * Play all song in same time
+     * @return {void}
+     */
+
+    playSound: function() {
+        var scope = this;
+        if (scope.isReady) {
+            for(var current in scope.ColorsDetected) {
+                for (var color in scope.ColorsDetected[current]) {
+                    scope.ColorsDetected[current][color].sound.playSound();
+                }
+            }
         }
     }
 };
