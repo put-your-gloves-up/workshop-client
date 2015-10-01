@@ -16,6 +16,8 @@ export default class DetectedColor {
         this.initialPosY = initialPosY;
         this.posX = 0;
         this.posY = 0;
+        this.detection = { color: '', x: 0, y: 0, width: 0, height: 0 };
+        this.resetDetection();
 
         this.init();
     }
@@ -44,6 +46,23 @@ export default class DetectedColor {
     setPos(posX, posY) {
         this.posX = posX;
         this.posY = posY;
+    }
+    
+    setDetection(rect, canvas) {
+        if(workshop.webCamDimensions) {
+            this.detection.color = rect.color;
+            this.detection.x = (rect.x * 100 / workshop.webCamDimensions.width) * canvas.width / 100;
+            this.detection.y = (rect.y * 100 / workshop.webCamDimensions.height) * canvas.height / 100;
+            this.detection.width = (rect.width * 100 / workshop.webCamDimensions.width) * canvas.width / 100;
+            this.detection.height = (rect.height * 100 / workshop.webCamDimensions.height) * canvas.height / 100;
+        } else {
+            this.detection = rect;
+        }
+    }
+    
+    resetDetection() {
+        this.detection.width = 0;
+        this.detection.height = 0;
     }
 
     /**

@@ -36,6 +36,10 @@ export default class Sound {
             });
         }
     }
+    
+    getVolume() {
+        return this.volume.gain.value;
+    }
 
     /**
      * Set Lowpass

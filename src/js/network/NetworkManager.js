@@ -133,6 +133,9 @@ export default class NetworkManager {
 
         // call someone - send our audio stream
         this.peerCall = this.peerConn.call(this.cid, stream);
+
+        // hide networkUI
+        $('.network-ui').toggleClass('hidden',true);
         
         this.peerCall.on('stream', this.receiveStream.bind(this));
         this.socket.on('peerToPeer', this.receiveData.bind(this));

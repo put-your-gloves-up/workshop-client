@@ -19,7 +19,7 @@ export default class WebcamManager {
     }
     
     initCanvas() {
-        this.canvasManager = new WebcamCanvas(this.canvas,this.video);
+        this.canvasManager = new WebcamCanvas(this.canvas,this.video, this.detectedColors);
     }
 
     initSpectralCanvas() {
@@ -57,6 +57,7 @@ export default class WebcamManager {
 
         for(var color in this.detectedColors){
             this.detectedColors[color].removeEffects();
+            this.detectedColors[color].resetDetection();
         }
 
         if (event.data.length != 0) {
@@ -64,11 +65,10 @@ export default class WebcamManager {
                 for(var color in scope.detectedColors) {
                     if (rect.color == color) {
                         scope.detectedColors[rect.color].setPos(rect.x, rect.y);
+                        scope.detectedColors[rect.color].setDetection(rect, scope.canvas);
                         scope.detectedColors[rect.color].updateEffects();
                     }
                 }
-
-                scope.canvasManager && scope.canvasManager.onDetectedColor(rect);
             });
         }
     }
