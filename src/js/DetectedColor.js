@@ -67,16 +67,18 @@ export default class DetectedColor {
     updateSounds(){
         this.sound.setVolume(1);
 
-        if(this.posY != 0 && this.posY > workshop.webCamDimensions.height/2) {
-            var value = workshop.webCamDimensions.height - this.posY;
-            this.sound.setBiQuad('lowpass', value * 30);
-        }
-        if(this.posY != 0 && this.posY < workshop.webCamDimensions.height/2) {
-            var value = workshop.webCamDimensions.height/2 - this.posY;
-            this.sound.setBiQuad('highpass', value * 10);
-        }
-        if(this.posX != 0) {
-            this.sound.setQ(this.posX /20);
+        if(workshop.webCamDimensions) {
+            if (this.posY != 0 && this.posY > workshop.webCamDimensions.height / 2) {
+                var value = workshop.webCamDimensions.height - this.posY;
+                this.sound.setBiQuad('lowpass', value * 30);
+            }
+            if (this.posY != 0 && this.posY < workshop.webCamDimensions.height / 2) {
+                var value = workshop.webCamDimensions.height / 2 - this.posY;
+                this.sound.setBiQuad('highpass', value * 10);
+            }
+            if (this.posX != 0) {
+                this.sound.setQ(this.posX / 20);
+            }
         }
     }
 

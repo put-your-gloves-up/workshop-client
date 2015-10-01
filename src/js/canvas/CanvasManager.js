@@ -39,7 +39,7 @@ export default class CanvasManager {
         overlay.y = (rect.y * 100 / workshop.webCamDimensions.height) * this.canvas.height / 100;
         overlay.width = (rect.width * 100 / workshop.webCamDimensions.width) * this.canvas.width / 100;
         overlay.height = (rect.height * 100 / workshop.webCamDimensions.height) * this.canvas.height / 100;
-
+        
         this.canvasContext.strokeStyle = overlay.color;
         this.canvasContext.strokeRect(overlay.x, overlay.y, overlay.width, overlay.height);
         this.canvasContext.font = '11px Helvetica';

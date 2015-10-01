@@ -54,11 +54,7 @@ var app = {
         // Put user's video directly into #myVideo
         navigator.getUserMedia({
                 video: true,
-                audio: false,
-                mandatory: {
-                    width: { min: 640, max: 640 },
-                    height: { min: 480, max: 480 }
-                }
+                audio: false
             }, function (localMediaStream) {
             var video = document.querySelector('#myVideo');
             video.src = window.URL.createObjectURL(localMediaStream);
@@ -73,12 +69,13 @@ var app = {
                         width: video.clientWidth, 
                         height: video.clientHeight 
                     };
+                    console.log(workshop.webCamDimensions);
                     $('#myVideo').toggleClass('video-small', false);
                     scope.initCanvas();
-
-                    cb && cb();
                 }, 1000);
             };
+
+            cb && cb();
 
         }, util.log);
     },
