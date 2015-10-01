@@ -170,11 +170,10 @@ var app = {
         var scope = this;
         for(var current in scope.ColorsDetected){
             j++;
-
             for(var color in scope.ColorsDetected[current]) {
                 scope.loadSound(scope.ColorsDetected[current][color], function () {
                     i++;
-                    if (i == Object.keys(scope.ColorsDetected[current]).length && j == Object.keys(scope.ColorsDetected).length) {
+                    if (i == (Object.keys(scope.ColorsDetected.local).length + Object.keys(scope.ColorsDetected.distant).length)) {
                         scope.isReady = true;
                         scope.playSound();
                     }
