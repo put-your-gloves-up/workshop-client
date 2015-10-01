@@ -22,52 +22,6 @@ export default class Sound {
     }
 
     /**
-     * Set Volume
-     * @param {Number} level
-     * @return {void}
-     */
-
-    setVolume(level){
-        if(this.volume){
-
-            gsap.to(this.volume.gain, 1, {
-                value: level,
-                ease:Circ.easeOut
-            });
-        }
-    }
-    
-    getVolume() {
-        return this.volume.gain.value;
-    }
-
-    /**
-     * Set Lowpass
-     * @param {String} type
-     * @param {Number} frequency
-     * @return {void}
-     */
-
-    setBiQuad(type, frequency){
-        if(this.biquad){
-            this.biquad.frequency.value = frequency;
-            this.biquad.type = type;
-        }
-    }
-
-    /**
-     * Set Lowpass
-     * @param {Number} level
-     * @return {void}
-     */
-
-    setQ(q){
-        if(this.biquad){
-            this.biquad.Q.value = q;
-        }
-    }
-
-    /**
      * Connect filters and play sound
      * @return {void}
      */
@@ -104,7 +58,7 @@ export default class Sound {
             this.volume.gain.value = 0;
 
             this.analyser = this.context.createAnalyser();
-            this.analyser.fftSize = 64;
+            this.analyser.fftSize = 128;
             //var distortion = this.context.createWaveShaper();
             //distortion.curve = this.makeDistorsionCurve(0);
 
@@ -127,75 +81,62 @@ export default class Sound {
     }
 
     /**
-     * Init drawing
+     * Set Volume
+     * @param {Number} level
      * @return {void}
      */
 
-    initDraw(){
-        this.visualizer = document.querySelector('#visualizer');
-        this.visualizerCtx = this.visualizer.getContext("2d");
-
-        this.bufferLength = this.analyser.fftSize;
-        this.dataArray = new Uint8Array(this.bufferLength);
-
-        console.log(this);
-
-        this.draw();
+    setVolume(level){
+        if(this.volume){
+            gsap.to(this.volume.gain, 4, {
+                value: level,
+                ease:Circ.easeOut
+            });
+        }
     }
 
     /**
-     * Render the spectrum in canvas
+     * Set Lowpass
+     * @param {String} type
+     * @param {Number} frequency
      * @return {void}
      */
 
-    draw(){
-        //console.log('enter drawing methods');
-        this.width = this.visualizer.width;
-        this.height = this.visualizer.height;
-
-        this.analyser.getByteFrequencyData(this.dataArray);
-        /*
-        this.visualizerCtx.fillStyle = 'rgb(200, 200, 200)';
-        this.visualizerCtx.fillRect(0, 0, this.width, this.height);
-
-        this.visualizerCtx.lineWidth = 2;
-        this.visualizerCtx.strokeStyle = 'rgb(0, 0, 0)';
-
-        this.visualizerCtx.beginPath();
-
-        var sliceWidth = this.width * 1.0 / this.bufferLength;
-        var x = 0;
-
-        for(var i = 0; i < this.bufferLength; i++) {
-
-            var v = this.dataArray[i] / 128.0;
-            var y = v * this.height/2;
-
-            if(i === 0) {
-                this.visualizerCtx.moveTo(x, y);
-            } else {
-                this.visualizerCtx.lineTo(x, y);
-            }
-
-            x += sliceWidth;
-        }*/
-
-        this.visualizerCtx.clearRect(0, 0, this.width, this.height);
-
-        var barWidth = (this.width / this.bufferLength) * 2.5;
-        var barHeight;
-        var x = 0;
-
-        for(var i = 0; i < this.bufferLength; i++) {
-            barHeight = this.dataArray[i];
-
-            this.visualizerCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
-            this.visualizerCtx.fillRect(x,this.height-barHeight/2,barWidth,barHeight/2);
-
-            x += barWidth + 1;
+    setBiQuad(type, frequency){
+        if(this.biquad){
+            this.biquad.frequency.value = frequency;
+            this.biquad.type = type;
         }
+    }
 
-        this.drawVisual = requestAnimationFrame(this.draw.bind(this));
+    /**
+     * Set Lowpass
+     * @param {Number} level
+     * @return {void}
+     */
+
+    setQ(q){
+        if(this.biquad){
+            this.biquad.Q.value = q;
+        }
+    }
+
+    /**
+     * Get analyser
+     * @return {Object}
+     */
+
+    getAnalyser(){
+        return this.analyser;
+    }
+
+    /**
+     * get Volume
+     * @return {Number}
+     */
+
+    getVolume(){
+        return this.volume.gain.value;
     }
 
     /**
