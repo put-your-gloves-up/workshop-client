@@ -3,7 +3,7 @@
  */
 
 import NetworkManager from "./network/NetworkManager";
-import CanvasManager from "./canvas/CanvasManager";
+import WebcamCanvas from "./canvas/WebcamCanvas";
 import * as util from "./misc/util";
 import $ from "jquery";
 import Sound from "./audio/Sound";
@@ -87,8 +87,8 @@ var app = {
 
     initCanvas: function() {
         this.canvasManagers = {
-            local: new CanvasManager($('#myCanvas')[0],$('#myVideo')[0]),
-            distant: new CanvasManager($('#distCanvas')[0],$('#distVideo')[0])
+            local: new WebcamCanvas($('#myCanvas')[0],$('#myVideo')[0]),
+            distant: new WebcamCanvas($('#distCanvas')[0],$('#distVideo')[0])
         }
     },
 
