@@ -19,7 +19,9 @@ export default class SpectralCanvas {
      */
 
     init(){
-        this.visualizer = this.canvas
+        this.visualizer = this.canvas;
+        this.visualizer.width = $('.spectral-canvas')[0].clientWidth;
+        this.visualizer.height = $('.spectral-canvas')[0].clientHeight;
         this.visualizerCtx = this.canvas.getContext("2d");
 
         this.dataArray = new Uint8Array(this.bufferLength);
