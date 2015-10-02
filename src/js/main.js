@@ -12,20 +12,29 @@ import DetectedColor from "./DetectedColor";
 var app = {
     
     webcamManagers: null,
-    
+
+    /**
+     * Launches the app *
+     */
     init: function () {
         window.workshop = {};
 
         var scope = this;
         
+        // Firstly, we fill our webcamManagers array
         this.initWebcamManagers();
 
+        // Then, we ask for the user's camera
         this.getLocalWebcam(function() {
+            // Once it's done, we launch the networkmanager
             scope.initNetwork.bind(scope).call();
-            scope.initSound.bind(scope, scope.initColorTracker.bind(scope)).call();
+            // Finally, we launch sounds and search for colors !
+            scope.initSound.bind(scope).call();
+            scope.initColorTracker.bind(scope).call();
             scope.loadSounds.bind(scope).call();
         });
 
+        // Init interface
         this.bindUIActions();
     },
 
@@ -35,11 +44,17 @@ var app = {
      *
      * ################# */
 
+    /**
+     * UI Actions global manager *
+     */
     bindUIActions: function() {
         this.registerNetworkUI();
         this.registerCityChoose();
     },
 
+    /**
+     * UI Actions concerning the .network-ui pop-in *
+     */
     registerNetworkUI: function() {
         var $networkUI = $('.network-ui');
 
@@ -59,16 +74,21 @@ var app = {
             }
         });
     },
-    
-    registerCityChoose() {
+
+    /**
+     * Allows the user to choose his current city *
+     */
+    registerCityChoose: function() {
         var $b = $('body'),
             $networkUI = $('.network-ui'),
             $citiesChooseWrapper = $('.city-choose-wrapper ',$networkUI),
-            cities = ['annecy','grenoble'];
+            cities = ['annecy','grenoble']; // List of cities available
         
+        // Append all the cities
         for(var i=0; i < cities.length; i++)
             $citiesChooseWrapper.append('<a href="#" class="btn">'+cities[i]+'</a> ');
 
+        // Click listener, toggling the city chosen
         $citiesChooseWrapper.on('click','.btn', function() {
             // BTN toggle
             $('.btn', $citiesChooseWrapper).toggleClass('active',false);
@@ -79,9 +99,16 @@ var app = {
                 $b.toggleClass(cities[i]+'-active',false);
             $b.toggleClass($(this).text()+'-active',true);
         });
+        
+        // Choose the first city by default
+        $($('.btn',$citiesChooseWrapper)[0]).trigger('click');
     },
-    
-    toggleIdle(value) {
+
+    /**
+     * Allows to toggle or not the IDLE state of the app *
+     * @param value - (Optional) true or false
+     */
+    toggleIdle: function(value) {
         if(value === true || value === false)
             $('body').toggleClass('idle',value);
         else
@@ -94,6 +121,9 @@ var app = {
      *
      * ################# */
 
+    /**
+     * Fills the webcamManagers array with their own canvases, videos and visualizers *
+     */
     initWebcamManagers: function() {
         this.webcamManagers = {
             local: new WebcamManager('#myCanvas','#myVideo', '#myVisualizer'),
@@ -101,6 +131,12 @@ var app = {
         }
     },
 
+    /**
+     * Allows to get the local webcam stream and store it in our WORKSHOP global namespace *
+     * In order to avoid multiple permissions' asks during the app's use *
+     * Used only ONCE *
+     * @param cb - function to load when stream has been stored
+     */
     getLocalWebcam: function (cb) {
         var scope = this;
 
@@ -114,6 +150,9 @@ var app = {
             video.src = window.URL.createObjectURL(localMediaStream);
 
             workshop.localWebcamStream = localMediaStream;
+
+            cb && cb();
+            
             // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
             // See crbug.com/110938.
             video.onloadedmetadata = function (e) {
@@ -130,9 +169,6 @@ var app = {
                     }
                 }, 1000);
             };
-
-            cb && cb();
-
         }, util.log);
     },
 
@@ -141,7 +177,10 @@ var app = {
      * NETWORK RELATED
      *
      * ################# */
-    
+
+    /**
+     * Creates the app's networkManager *
+     */
     initNetwork: function () {
         this.networkManager = new NetworkManager();
     },
@@ -152,18 +191,21 @@ var app = {
      *
      * ################# */
 
+    /**
+     * Init color tracking for the app on local webcamManager *
+     */
     initColorTracker: function() {
-        // Define local colors
-        this.webcamManagers.local.addDetectedColor(new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100));
-        this.webcamManagers.local.addDetectedColor(new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100));
-        this.webcamManagers.local.addDetectedColor(new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext), 100, 100));
-        this.webcamManagers.local.addDetectedColor(new DetectedColor('blue', new Sound('audio/PO_CymbalsA120-01.mp3', this.audioContext), 100, 100));
+        // Define local colors to detected and their affected sounds
+        this.webcamManagers.local.addDetectedColor(new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext)));
+        this.webcamManagers.local.addDetectedColor(new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext)));
+        this.webcamManagers.local.addDetectedColor(new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext)));
+        this.webcamManagers.local.addDetectedColor(new DetectedColor('blue', new Sound('audio/PO_CymbalsA120-01.mp3', this.audioContext)));
 
-        // Define distant colors
-        this.webcamManagers.distant.addDetectedColor(new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext), 100, 100));
-        this.webcamManagers.distant.addDetectedColor(new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext), 100, 100));
-        this.webcamManagers.distant.addDetectedColor(new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext), 100, 100));
-        this.webcamManagers.distant.addDetectedColor(new DetectedColor('blue', new Sound('audio/PO_CymbalsA120-01.mp3', this.audioContext), 100, 100));
+        // Define distant colors to receive and their affected sounds
+        this.webcamManagers.distant.addDetectedColor(new DetectedColor('magenta', new Sound('audio/PO_DualBass120C-02.wav', this.audioContext)));
+        this.webcamManagers.distant.addDetectedColor(new DetectedColor('yellow', new Sound('audio/PO_BeatAmpedA120-02.wav', this.audioContext)));
+        this.webcamManagers.distant.addDetectedColor(new DetectedColor('red', new Sound('audio/PO_Massaw120C-02.mp3', this.audioContext)));
+        this.webcamManagers.distant.addDetectedColor(new DetectedColor('blue', new Sound('audio/PO_CymbalsA120-01.mp3', this.audioContext)));
 
         // Add custom color trackers
         tracking.ColorTracker.registerColor('red', function(r, g, b) {
@@ -183,8 +225,16 @@ var app = {
         // Track on local webcam only
         this.webcamManagers.local.trackColors();
     },
-    
-    onColorTrack() {
+
+    /**
+     * Called on each color track event which is received *
+     * from both local and distant webcamManagers *
+     * Allows to switch between ACTIVE and IDLE state if there is or not *
+     * activity since 10 last seconds *
+     * 
+     * TODO - Not so clean ^ *
+     */
+    onColorTrack: function() {
         if(this.webcamManagers.local.active || this.webcamManagers.distant.active) {
             window.reactivatingIdle && clearTimeout(window.reactivatingIdle);
             window.reactivatingIdle = false;
@@ -201,21 +251,21 @@ var app = {
      *
      * ################# */
     
-    initSound: function(cb) {
+    /**
+     * Allows to get AudioContext and to store it *
+     */
+    initSound: function() {
         // Define audio context
         window.AudioContext = window.AudioContext ||
         window.webkitAudioContext;
 
         this.audioContext = new AudioContext();
-
-        cb && cb();
     },
 
     /**
-     * Load sample for each detected color
+     * Loads sample for each detected color
      * @return {void}
      */
-
     loadSounds: function(){
         var i = 0,
             scope = this;
@@ -232,10 +282,9 @@ var app = {
     },
 
     /**
-     * Play all song in same time
+     * Launch all available sounds at the same time to be synced
      * @return {void}
      */
-
     playSound: function() {
         var scope = this;
         if (scope.isReady) {

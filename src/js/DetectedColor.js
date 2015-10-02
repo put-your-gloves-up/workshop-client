@@ -9,11 +9,9 @@ import DisplayZone from './canvas/DisplayZone';
 import * as util from './misc/util';
 
 export default class DetectedColor {
-    constructor(color, sound, initialPosX, initialPosY) {
+    constructor(color, sound) {
         this.color = color;
         this.sound = sound;
-        this.initialPosX = initialPosX;
-        this.initialPosY = initialPosY;
         this.posX = 0;
         this.posY = 0;
         this.detection = { color: '', x: 0, y: 0, width: 0, height: 0 };
