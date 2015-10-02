@@ -37,6 +37,7 @@ var app = {
 
     bindUIActions: function() {
         this.registerNetworkUI();
+        this.registerCityChoose();
     },
 
     registerNetworkUI: function() {
@@ -56,6 +57,27 @@ var app = {
                     console.log(e.keyCode);
                     break;
             }
+        });
+    },
+    
+    registerCityChoose() {
+        var $b = $('body'),
+            $networkUI = $('.network-ui'),
+            $citiesChooseWrapper = $('.city-choose-wrapper ',$networkUI),
+            cities = ['annecy','grenoble'];
+        
+        for(var i=0; i < cities.length; i++)
+            $citiesChooseWrapper.append('<a href="#" class="btn">'+cities[i]+'</a> ');
+
+        $citiesChooseWrapper.on('click','.btn', function() {
+            // BTN toggle
+            $('.btn', $citiesChooseWrapper).toggleClass('active',false);
+            $(this).toggleClass('active',true);
+            
+            // BODY toggle
+            for(var i=0; i < cities.length; i++)
+                $b.toggleClass(cities[i]+'-active',false);
+            $b.toggleClass($(this).text()+'-active',true);
         });
     },
 

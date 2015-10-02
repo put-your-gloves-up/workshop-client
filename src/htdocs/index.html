@@ -8,11 +8,14 @@
 </head>
 <body>
 
-    <div class="position-center network-ui z-index-20 bkg-color-light padding-std">
+    <div class="position-center network-ui z-index-20 bkg-color-light padding-std full-width full-height">
         <span class="close">X</span>
         
         <h1>WorkShop JS</h1>
         <p>I am <span id="user">not connected ...</span></p>
+
+        <h4>Choose your city</h4>
+        <div class="city-choose-wrapper"></div>
         
         <h4>Connect with :</h4>
         
@@ -28,6 +31,18 @@
         <video id="distVideo" autoplay muted></video>
         <canvas id="distCanvas" class="webcam-canvas"></canvas>
         <canvas id="distVisualizer" class="spectral-canvas"></canvas>
+    </div>
+    
+    <div class="hud-wrapper">
+        
+        <div class="city-wrapper annecy-wrapper">
+            <h2>ANNECY</h2>
+        </div>
+        
+        <div class="city-wrapper grenoble-wrapper">
+            <h2>GRENOBLE</h2>
+        </div>
+        
     </div>
 
     <script src="js/vendor/tracking-min.js"></script>

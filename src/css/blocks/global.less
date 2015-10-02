@@ -1,5 +1,8 @@
 body {
   background: @color1;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 300;
+  text-transform: uppercase;
 }
 
 .video-wrapper {
@@ -85,6 +88,8 @@ body {
 }
 
 .network-ui {
+  box-sizing: border-box;
+  
   .close {
     position: absolute;
     top: 0;
@@ -104,6 +109,32 @@ body {
       display: block;
       background-color: rgba(0,0,0,0.1);
       cursor: pointer;
+    }
+  }
+}
+
+.hud-wrapper {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  
+  .city-wrapper {
+    position: absolute;
+    height: 50%;
+    width: 100%;
+    top: 50%;
+  }
+  
+  .annecy-active & {
+    .annecy-wrapper {
+      top: 0;
+    }
+  }
+  
+  .grenoble-active & {
+    .grenoble-wrapper {
+      top: 0;
     }
   }
 }
