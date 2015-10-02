@@ -191,7 +191,7 @@ var app = {
             if($('body').hasClass('idle')) this.toggleIdle(false);
         } else if(!this.webcamManagers.local.active || !this.webcamManagers.distant.active) {
             if(!window.reactivatingIdle)
-                window.reactivatingIdle = setTimeout(this.toggleIdle.bind(this, true), 1000);
+                window.reactivatingIdle = setTimeout(this.toggleIdle.bind(this, true), 10000);
         }
     },
 
