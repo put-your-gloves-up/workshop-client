@@ -49,7 +49,7 @@ export default class SpectralCanvas {
 
             // get color
             this.color = this.detectedColors[color].color;
-            this.colorRGB = this.convertToRGB(this.color);
+            this.colorRGB = util.colorsToRGB[this.detectedColors[color].color];
 
             // retrieve analyser and volume
             this.analyser = this.detectedColors[color].sound.getAnalyser();
@@ -75,28 +75,5 @@ export default class SpectralCanvas {
         }
 
         this.drawVisual = requestAnimationFrame(this.render.bind(this));
-    }
-
-    /**
-     * Convert string color to RGB
-     * @return {void}
-     */
-
-    convertToRGB(color) {
-
-        var colors = {
-            red : {r : 255, g : 0, b: 0},
-            yellow : {r: 255, g: 255, b: 50},
-            magenta : {r: 124, g: 0, b: 125}
-        }
-
-        if(typeof colors[color.toLowerCase()] != 'undefined') {
-            return colors[color.toLowerCase()];
-        }
-
-        else {
-            return false;
-        }
-
     }
 }
