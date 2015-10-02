@@ -25,12 +25,14 @@ export default class ParticlesEmitter {
     render(context) {
         
         for(var i = 0; i < this.particles.length; i++) {
-            
-            this.particles[i].update();
-            this.particles[i].render(context);
-            
-            if(this.particles[i].isDead() && this.detectedColor.sound.getVolume()>0.5) this.particles[i].rebirth(this.x,this.y);
-            
+
+            if(!this.particles[i].isDead()) {
+                this.particles[i].update();
+                this.particles[i].render(context);
+            } else if (this.detectedColor.sound.getVolume()>0.5) {
+                this.particles[i].rebirth(this.x, this.y);
+            }
+
         }
     }
     
