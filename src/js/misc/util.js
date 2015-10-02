@@ -10,5 +10,6 @@ export var colorsToRGB = {
     red: { r: 255, g: 0, b: 0},
     yellow: { r: 255, g: 255, b: 0},
     magenta: { r: 255, g: 0, b: 255},
-    cyan: { r: 0, g: 255, b: 255}
+    cyan: { r: 0, g: 255, b: 255},
+    blue: { r: 0, g: 50, b: 255}
 }
