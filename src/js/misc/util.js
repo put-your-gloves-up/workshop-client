@@ -7,9 +7,9 @@ export function log (msg) {
 }
 
 export var colorsToRGB = {
-    red: { r: 255, g: 0, b: 0},
-    yellow: { r: 255, g: 255, b: 0},
-    magenta: { r: 255, g: 0, b: 255},
+    red: { r: 255, g: 51, b: 51},
+    yellow: { r: 218, g: 255, b: 7},
+    magenta: { r: 255, g: 98, b: 125},
     cyan: { r: 0, g: 255, b: 255},
-    blue: { r: 0, g: 50, b: 255}
+    blue: { r: 0, g: 209, b: 255}
 }
