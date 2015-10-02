@@ -2,24 +2,47 @@
  * Created by jerek0 on 30/09/15.
  */
 import * as util from '../misc/util';
+import ParticlesEmitter from './entities/ParticlesEmitter';
 import $ from 'jquery';
 
 export default class WebcamCanvas {
-    constructor(canvas, video) {
+    constructor(canvas, video, detectedColors) {
         this.canvas = canvas;
         this.video = video;
+        this.detectedColors = detectedColors;
+        this.emitters = {};
+        this.updateSize();
+        this.debug = false;
 
         this.init();
     }
 
     init() {
+        this.fillEmitters();
         this.updateSize();
+        
+        this.render();
+    }
+    
+    fillEmitters() {
+        for(var key in this.detectedColors) {
+            this.emitters[key] = new ParticlesEmitter(this.detectedColors[key]);
+        }
     }
     
     render() {
-        
-        
-        window.requestAnimationFrame(this.render);
+        this.resetCanvas();
+
+        for(var key in this.emitters) {
+            if(this.debug) {
+                this.onDetectedColor(this.emitters[key].detectedColor.detection);
+            } else {
+                this.emitters[key].updatePos();
+                this.emitters[key].render(this.canvasContext);
+            }
+        }
+
+        window.requestAnimationFrame(this.render.bind(this));
     }
 
     updateSize() {
@@ -28,10 +51,8 @@ export default class WebcamCanvas {
 
         this.canvas.width = this.video.clientWidth;
         this.canvas.height = this.video.clientHeight;
-
+        
         this.canvasContext = this.canvas.getContext('2d');
-
-        console.log(this.canvas.width, this.canvas.height);
     }
 
     resetCanvas() {
@@ -39,19 +60,14 @@ export default class WebcamCanvas {
     }
 
     onDetectedColor(rect) {
-        var overlay = {};
-        overlay.color = rect.color;
-        overlay.x = (rect.x * 100 / workshop.webCamDimensions.width) * this.canvas.width / 100;
-        overlay.y = (rect.y * 100 / workshop.webCamDimensions.height) * this.canvas.height / 100;
-        overlay.width = (rect.width * 100 / workshop.webCamDimensions.width) * this.canvas.width / 100;
-        overlay.height = (rect.height * 100 / workshop.webCamDimensions.height) * this.canvas.height / 100;
-
-        this.canvasContext.strokeStyle = overlay.color;
-        this.canvasContext.strokeRect(overlay.x, overlay.y, overlay.width, overlay.height);
-        this.canvasContext.font = '11px Helvetica';
-        this.canvasContext.fillStyle = "#fff";
-        this.canvasContext.fillText('x: ' + overlay.x + 'px', overlay.x + overlay.width + 5, overlay.y + 11);
-        this.canvasContext.fillText('y: ' + overlay.y + 'px', overlay.x + overlay.width + 5, overlay.y + 22);
+        if(rect.width > 0 && rect.height > 0) {
+            this.canvasContext.strokeStyle = rect.color;
+            this.canvasContext.strokeRect(rect.x, rect.y, rect.width, rect.height);
+            this.canvasContext.font = '11px Helvetica';
+            this.canvasContext.fillStyle = "#fff";
+            this.canvasContext.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
+            this.canvasContext.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
+        }
     }
 
 }
