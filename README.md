@@ -27,3 +27,4 @@ Compiled files are stored there. This folder is our final product, you can acces
 
 ### gulp
 Automation scripts
+
