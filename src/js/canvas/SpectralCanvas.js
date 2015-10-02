@@ -9,7 +9,7 @@ export default class SpectralCanvas {
     constructor(canvas, detectedColors) {
         this.canvas = canvas;
         this.detectedColors = detectedColors;
-        this.bufferLength = 64;
+        this.bufferLength = 256;
         this.init();
     }
 
