@@ -2,10 +2,12 @@
  * Created by jerek0 on 01/10/15.
  */
 
+import * as util from '../../misc/util';
+
 export default class Particle {
     constructor(emitter) {
         this.emitter = emitter;
-        this.size = 40;
+        this.size = (0.5+Math.random() * 0.5 * 100);
         this.life = 100;
         
         this.rebirth();
@@ -27,28 +29,12 @@ export default class Particle {
         this.x+=this.vx;
         this.y+=this.vy;
 
-        this.life-=0.1;
+        this.life-=0.04;
     }
     
     render(context) {
-        var color = { r: 255, g: 255, b: 255 };
-        switch(this.emitter.detectedColor.color) {
-            case 'red':
-                color = { r: 255, g: 0, b: 0};
-                break;
-            case 'yellow':
-                color = { r: 255, g: 255, b: 0};
-                break;
-            case 'magenta':
-                color = { r: 255, g: 0, b: 255};
-                break;
-            case 'cyan':
-                color = { r: 0, g: 255, b: 255};
-                break;
-        }
-        
         context.beginPath();
-        context.fillStyle = 'rgba('+color.r+','+color.g+','+color.b+','+this.life+')';
+        context.fillStyle = 'rgba('+util.colorsToRGB[this.emitter.detectedColor.color].r+','+util.colorsToRGB[this.emitter.detectedColor.color].g+','+util.colorsToRGB[this.emitter.detectedColor.color].b+','+this.life+')';
         context.arc(this.x, this.y, this.size/2, 0, Math.PI * 2, false);
         context.fill();
     }

@@ -51,10 +51,8 @@ export default class WebcamCanvas {
 
         this.canvas.width = this.video.clientWidth;
         this.canvas.height = this.video.clientHeight;
-
+        
         this.canvasContext = this.canvas.getContext('2d');
-
-        console.log(this.canvas.width, this.canvas.height);
     }
 
     resetCanvas() {

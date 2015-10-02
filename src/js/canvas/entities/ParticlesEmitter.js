@@ -9,7 +9,7 @@ export default class ParticlesEmitter {
         this.detectedColor = detectedColor;
         this.updatePos();
         this.active = false;
-        this.nbOfParticles = 10;
+        this.nbOfParticles = 100;
         this.particles = [];
         
         for(var i = 0; i<this.nbOfParticles;i++) {
