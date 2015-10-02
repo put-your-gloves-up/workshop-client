@@ -9,7 +9,7 @@ export default class SpectralCanvas {
     constructor(canvas, detectedColors) {
         this.canvas = canvas;
         this.detectedColors = detectedColors;
-        this.bufferLength = 128;
+        this.bufferLength = 64;
         this.init();
     }
 
@@ -38,8 +38,12 @@ export default class SpectralCanvas {
 
         // clean
         this.visualizerCtx.clearRect(0, 0, this.width, this.height);
+        this.j = 0;
 
         for(var color in this.detectedColors){
+
+            // iterator
+            this.j++;
 
             // get color
             this.color = this.detectedColors[color].color;
@@ -47,8 +51,6 @@ export default class SpectralCanvas {
 
             // retrieve analyser and volume
             this.analyser = this.detectedColors[color].sound.getAnalyser();
-            //console.log(this.detectedColors[color].color+' : ');
-            //console.log(this.detectedColors[color].sound.getVolume());
             this.volume = this.detectedColors[color].sound.getVolume();
 
             // get data
@@ -57,7 +59,7 @@ export default class SpectralCanvas {
             // draw
             var barWidth = (this.width / this.bufferLength) * 2.5;
             var barHeight;
-            var x = 0;
+            var x = barWidth/2 * this.j - barWidth/2;
 
             for(var i = 0; i < this.bufferLength; i++) {
                 barHeight = this.dataArray[i];
@@ -65,7 +67,7 @@ export default class SpectralCanvas {
                 this.visualizerCtx.fillStyle = 'rgba(' + this.colorRGB.r + ',' + this.colorRGB.g + ',' + this.colorRGB.b + ', 0.6 )';
                 this.visualizerCtx.fillRect(x,(this.height-barHeight/2) * (1/this.volume), barWidth, (barHeight/2));
 
-                x += barWidth + 1;
+                x += barWidth * 1.5;
             }
 
         }

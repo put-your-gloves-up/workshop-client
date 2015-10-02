@@ -58,7 +58,7 @@ export default class Sound {
             this.volume.gain.value = 0;
 
             this.analyser = this.context.createAnalyser();
-            this.analyser.fftSize = 128;
+            this.analyser.fftSize = 64;
             //var distortion = this.context.createWaveShaper();
             //distortion.curve = this.makeDistorsionCurve(0);
 
