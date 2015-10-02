@@ -8,6 +8,7 @@ import * as util from "./misc/util";
 import $ from "jquery";
 import Sound from "./audio/Sound";
 import DetectedColor from "./DetectedColor";
+import _ from 'underscore';
 
 var app = {
     
@@ -37,6 +38,7 @@ var app = {
 
     bindUIActions: function() {
         this.registerNetworkUI();
+        this.registerCityChoose();
     },
 
     registerNetworkUI: function() {
@@ -57,6 +59,34 @@ var app = {
                     break;
             }
         });
+    },
+    
+    registerCityChoose() {
+        var $b = $('body'),
+            $networkUI = $('.network-ui'),
+            $citiesChooseWrapper = $('.city-choose-wrapper ',$networkUI),
+            cities = ['annecy','grenoble'];
+        
+        for(var i=0; i < cities.length; i++)
+            $citiesChooseWrapper.append('<a href="#" class="btn">'+cities[i]+'</a> ');
+
+        $citiesChooseWrapper.on('click','.btn', function() {
+            // BTN toggle
+            $('.btn', $citiesChooseWrapper).toggleClass('active',false);
+            $(this).toggleClass('active',true);
+            
+            // BODY toggle
+            for(var i=0; i < cities.length; i++)
+                $b.toggleClass(cities[i]+'-active',false);
+            $b.toggleClass($(this).text()+'-active',true);
+        });
+    },
+    
+    toggleIdle(value) {
+        if(value === true || value === false)
+            $('body').toggleClass('idle',value);
+        else
+            $('body').toggleClass('idle');
     },
 
     /* #################
@@ -144,6 +174,17 @@ var app = {
         
         // Track on local webcam only
         this.webcamManagers.local.trackColors();
+    },
+    
+    onColorTrack() {
+        if(this.webcamManagers.local.active || this.webcamManagers.distant.active) {
+            window.reactivatingIdle && clearTimeout(window.reactivatingIdle);
+            window.reactivatingIdle = false;
+            if($('body').hasClass('idle')) this.toggleIdle(false);
+        } else if(!this.webcamManagers.local.active || !this.webcamManagers.distant.active) {
+            if(!window.reactivatingIdle)
+                window.reactivatingIdle = setTimeout(this.toggleIdle.bind(this, true), 1000);
+        }
     },
 
     /* #################

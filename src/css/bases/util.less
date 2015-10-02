@@ -6,12 +6,25 @@
 }
 
 .full-width { width: 100%; }
+.full-height { height: 100% }
 .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
 .mid-transparent { .opacity(0.5); }
 .highlighted { color: #f5b200 !important; }
 
-.btn {  }
+.btn { 
+  display: inline-block; 
+  background-color: transparent; 
+  color: @colorDarkest; 
+  border: 1px solid @colorDarkest;
+  text-decoration: none; 
+  padding: @std/4; 
+  
+  &.active {
+    background-color: @colorDarkest;
+    color: @colorLightest;
+  }
+}
 .btn-primary { }
 .btn-lg { }
 

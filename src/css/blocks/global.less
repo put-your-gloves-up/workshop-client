@@ -1,5 +1,8 @@
 body {
   background: @color1;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 300;
+  text-transform: uppercase;
 }
 
 .video-wrapper {
@@ -85,6 +88,8 @@ body {
 }
 
 .network-ui {
+  box-sizing: border-box;
+  
   .close {
     position: absolute;
     top: 0;
@@ -106,4 +111,56 @@ body {
       cursor: pointer;
     }
   }
+}
+
+.hud-wrapper {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  
+  .city-wrapper {
+    position: absolute;
+    height: 50%;
+    width: 100%;
+    top: 50%;
+    color: white;
+    
+    .city-content {
+      
+      h2 {
+        font-size: 5rem;
+        margin: 0;
+      }
+
+      p {
+        margin: 0;
+      }
+      
+      .idle & {
+        .position-center;
+      }
+    }
+  }
+  
+  .annecy-active & {
+    .annecy-wrapper {
+      top: 0;
+    }
+  }
+  
+  .grenoble-active & {
+    .grenoble-wrapper {
+      top: 0;
+    }
+  }
+}
+
+.recording {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background-color: @color1;
+  margin-right: 0.5em;
 }

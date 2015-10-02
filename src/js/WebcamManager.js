@@ -14,6 +14,7 @@ export default class WebcamManager {
         this.video = $(this.videoId)[0];
         this.spectralCanvasId = spectralCanvas;
         this.spectralCanvas = $(spectralCanvas)[0];
+        this.active = false;
         
         this.detectedColors = {};
     }
@@ -61,6 +62,7 @@ export default class WebcamManager {
         }
 
         if (event.data.length != 0) {
+            this.active = true;
             event.data.forEach(function(rect) {
                 for(var color in scope.detectedColors) {
                     if (rect.color == color) {
@@ -70,7 +72,11 @@ export default class WebcamManager {
                     }
                 }
             });
+        } else {
+            this.active = false;
         }
+        
+        workshop.app.onColorTrack();
     }
     
     loadSounds(cb) {
