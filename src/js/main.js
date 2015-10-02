@@ -8,6 +8,7 @@ import * as util from "./misc/util";
 import $ from "jquery";
 import Sound from "./audio/Sound";
 import DetectedColor from "./DetectedColor";
+import _ from 'underscore';
 
 var app = {
     
@@ -79,6 +80,13 @@ var app = {
                 $b.toggleClass(cities[i]+'-active',false);
             $b.toggleClass($(this).text()+'-active',true);
         });
+    },
+    
+    toggleIdle(value) {
+        if(value === true || value === false)
+            $('body').toggleClass('idle',value);
+        else
+            $('body').toggleClass('idle');
     },
 
     /* #################
@@ -166,6 +174,17 @@ var app = {
         
         // Track on local webcam only
         this.webcamManagers.local.trackColors();
+    },
+    
+    onColorTrack() {
+        if(this.webcamManagers.local.active || this.webcamManagers.distant.active) {
+            window.reactivatingIdle && clearTimeout(window.reactivatingIdle);
+            window.reactivatingIdle = false;
+            if($('body').hasClass('idle')) this.toggleIdle(false);
+        } else if(!this.webcamManagers.local.active || !this.webcamManagers.distant.active) {
+            if(!window.reactivatingIdle)
+                window.reactivatingIdle = setTimeout(this.toggleIdle.bind(this, true), 1000);
+        }
     },
 
     /* #################
