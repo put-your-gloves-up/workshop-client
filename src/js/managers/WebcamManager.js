@@ -2,8 +2,8 @@
  * Created by jerek0 on 01/10/15.
  */
 import $ from 'jquery';
-import WebcamCanvas from './canvas/WebcamCanvas';
-import SpectralCanvas from './canvas/SpectralCanvas';
+import WebcamCanvas from '../canvas/WebcamCanvas';
+import SpectralCanvas from '../canvas/SpectralCanvas';
 
 /**
  * Instance for each webcam used in FO (local and distant in our case) *

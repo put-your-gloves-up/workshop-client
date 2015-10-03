@@ -2,12 +2,12 @@
  * Created by jerek0 on 07/05/2015.
  */
 
-import NetworkManager from "./network/NetworkManager";
-import WebcamManager from "./WebcamManager";
+import NetworkManager from "./managers/NetworkManager";
+import WebcamManager from "./managers/WebcamManager";
 import * as util from "./misc/util";
 import $ from "jquery";
 import Sound from "./audio/Sound";
-import DetectedColor from "./DetectedColor";
+import DetectedColor from "./misc/DetectedColor";
 
 var app = {
     

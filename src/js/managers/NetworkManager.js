@@ -5,20 +5,31 @@ import config from "../config";
 import $ from "jquery";
 import io from "socket.io-client";
 import * as util from "../misc/util";
-    
+
+
+/**
+ * This instance manages all network stuff and allows to connect to
+ * the socket.io server and to use webRTC between clients *
+ * */
 export default class NetworkManager {
     constructor() {
         this.socket = io(config.server+':'+config.port);
         
         this.init();
     }
-    
+
+    /**
+     * Initialize our NetworkManager * 
+     */
     init() {
         this.socket.on('connect', this.socketReady.bind(this));
         
         this.bindUIActions();
     }
-    
+
+    /**
+     * NetworkManager's user interface actions manager *
+     */
     bindUIActions() {
         // listen for click on users list
         $('body').on('click', '#users a', this.askCall.bind(this));
@@ -29,7 +40,10 @@ export default class NetworkManager {
      *	CONNECT IO
      *
      *******************/
-    
+
+    /**
+     * Called when receiving 'connect' event from socket.io server *
+     */
     socketReady() {
         console.log('socket ready');
 
@@ -46,26 +60,36 @@ export default class NetworkManager {
      *	IO EVENTS
      *
      *******************/
-    
+
+    /**
+     * Receiving local user ID from the server *
+     * @param id
+     */
     getUserId(id) {
         // user id
         this.uid = id;
         
-        console.log('get user id', this.uid);
+        console.log('received user id', this.uid);
 
+        // Inform our user
         $('#user').text(this.uid);
 
         // now that we got the user id, connect peer
         this.connectPeer();
     }
-    
+
+    /**
+     * Receiving users list from the server *
+     * @param users
+     */
     getUsersList(users) {
         console.log('get users list', users);
         
+        // Empty the view
         $('#users').empty();
 
+        // Re-fill the view
         if(users.length > 1) {
-            // display list
             var i = 0;
             for (i; i < users.length; i++) {
                 // don't display the current user (hein)
@@ -83,7 +107,10 @@ export default class NetworkManager {
      *	CONNECT PEER
      *
      *******************/
-    
+
+    /**
+     * Connects user to the webRTC server and wait for incoming events *
+     */
     connectPeer() {
         console.log('connect peer');
 
@@ -101,6 +128,10 @@ export default class NetworkManager {
         this.peerConn.on('call', this.receiveCall.bind(this));
     }
 
+    /**
+     * Peer is ready, ask for users list *
+     * @param peerId
+     */
     peerReady(peerId){
 
         console.log('peer ready '+peerId);

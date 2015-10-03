@@ -2,11 +2,7 @@
  * Created by Vincent on 30/09/2015.
  */
 
-/**
- * Created by Vincent on 29/09/2015.
- */
-import DisplayZone from './canvas/DisplayZone';
-import * as util from './misc/util';
+import * as util from './util';
 
 /**
  * Instance of each color which can be detected *
