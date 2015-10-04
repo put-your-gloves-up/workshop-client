@@ -1,5 +1,5 @@
-
-![Put your gloves up](http://img15.hostingpics.net/pics/380495putyourglovesup.jpg)
+[splash]: http://img15.hostingpics.net/pics/120332putyourglovesup.jpg
+![Alt text][splash]
 
 # Put your gloves up (CLIENT)
 
@@ -41,7 +41,7 @@ Open your terminal at the root of the projet and launch the following commands t
     npm install
     
 Once done, you'll have to copy the file '/src/js/config_sample.js' to '/src/js/config.js' and to set it up accordingly to your configuration. For example :
-    
+
     export default {
         server: "127.0.0.1", // The IP where your put-your-gloves-up-server runs
         port: 3002, // The port where your put-your-gloves-up-server runs
