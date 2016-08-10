@@ -15,15 +15,15 @@ effects like highpass / lowpass and quality filters.
 
 Default colors available are the following : magenta / yellow / red / blue.
 
-## Try the demo online !
+## ~~Try the demo online !~~  *(BROKEN)*
 
-You can access a demo by using this URL : http://91.121.120.180/workshop-js/.
-Connect two devices to this address, accept the webcam request and call the other device from one of them (identify each other with the IDs given)
+~~You can access a demo by using this URL : http://91.121.120.180/workshop-js/.
+Connect two devices to this address, accept the webcam request and call the other device from one of them (identify each other with the IDs given)~~
 
-The popin will close and your installation will be ready to use !
+~~The popin will close and your installation will be ready to use !~~
 
-_Put your gloves up_ has been developed to be used on portrait screens. 
-For best results, simulate a _Nexus 7_ with Google Chrome DevTools or use this URL (http://91.121.120.180/workshop-js/iframed.html) which simulates as much as possible a portrait screen.
+~~_Put your gloves up_ has been developed to be used on portrait screens. ~~
+~~For best results, simulate a _Nexus 7_ with Google Chrome DevTools or use this URL (http://91.121.120.180/workshop-js/iframed.html) which simulates as much as possible a portrait screen.~~
 
 ## How to use it on your computer
 
